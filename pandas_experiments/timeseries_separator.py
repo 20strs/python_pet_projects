@@ -5,18 +5,17 @@ from defaults.log import log, logging_levels
 log.level = logging_levels[1]
 
 
-def separator_v1(pd_df, chunk_size):
+def separator_v1(pd_df, chunk_size, key='dt'):
 
     if not isinstance(pd_df, pd.DataFrame):
         raise TypeError(f"wrong type of variable 'pd_series':{type(pd_df)}")
 
-    grouped = pd_df.groupby("dt") if pd_df.size else []
+    grouped = pd_df.groupby(key)
 
     arr = []
     chunk = pd.DataFrame()
 
     for idx, frame in grouped:
-        log.debug(f"idx : {idx}, size = {frame.size}")
         chunk = pd.concat([chunk, pd.DataFrame(frame)]).reset_index(drop=True)['dt']
         log.debug(chunk)
 
@@ -30,11 +29,11 @@ def separator_v1(pd_df, chunk_size):
     return arr
 
 
-def separator_v2(pd_df: pd.DataFrame, chunk_size: int):
+def separator_v2(pd_df: pd.DataFrame, chunk_size: int, key='dt'):
     if not isinstance(pd_df, pd.DataFrame):
         raise TypeError(f"wrong type of variable 'pd_series':{type(pd_df)}")
 
-    c = Counter(pd_df['dt'].to_list())
+    c = Counter(pd_df[key].to_list())
 
     arr = []
     cur_chunk = pd.Series()

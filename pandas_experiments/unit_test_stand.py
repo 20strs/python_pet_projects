@@ -10,7 +10,7 @@ log.level = logging_levels[1]
 
 class TestSeparator(unittest.TestCase):
     def setUp(self):
-        self.func = separator_v1
+        self.func = separator_v2
         self.chunk_size = 10
 
     def tearDown(self):
@@ -48,13 +48,13 @@ class TestSeparator(unittest.TestCase):
             min_chunk_size, self.chunk_size
         )
 
-    def test_empty(self):
-        log.info("run test_empty")
-        self.assertEqual(self.func(pd.DataFrame(), chunk_size=self.chunk_size), [])
-
     def test_none(self):
         log.info("run test_none")
         self.assertRaises(TypeError, self.func, pd_df=None, chunk_size=self.chunk_size)
+
+    def test_wrong_ts_column(self):
+        log.info("run test_ts_column_existence")
+        self.assertRaises(KeyError, self.func, pd_df=pd.DataFrame(), chunk_size=self.chunk_size)
 
 
 if __name__ == '__main__':
